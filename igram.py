@@ -2,25 +2,25 @@
 # ordering imports
 # Standard Library modules
 import json
+import copy
 
 # Third-party library
 import requests
 
-
-# self written module
-import keys
+ig_client_id = "c093bedbc7c64d04a3b28dd1c1fa72db"
 
 def get_ig_userid(ig_username):
-	url = "https://api.instagram.com/v1/users/search?q=" + ig_username + "&client_id=" + keys.ig_client_id
+	user = copy.copy(ig_username)
+	url = "https://api.instagram.com/v1/users/search?q=" + user + "&client_id=" + ig_client_id
 	re = requests.get(url)
 	da = json.loads(re.text)
 	for u in da["data"]:
-		if u["username"]==ig_username:
+		if u["username"]==user:
 			return u["id"]
 	return 0
 
 def get_recent_photos(ig_userid):
-	url = "https://api.instagram.com/v1/users/" + ig_userid + "/media/recent/?client_id=" + keys.ig_client_id
+	url = "https://api.instagram.com/v1/users/" + ig_userid + "/media/recent/?client_id=" + ig_client_id
 	re = requests.get(url)
 	da = json.loads(re.text)
 	photos = []

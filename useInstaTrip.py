@@ -4,18 +4,22 @@
 # self written module
 import trip
 import igram as insta
-import keys
+import copy
 
 def useInsta(insta_userid):
-    uid = insta.get_ig_userid(insta_userid)
+    userid = copy.copy(insta_userid)
+    uid = insta.get_ig_userid(userid)
     photo_list = insta.get_recent_photos(uid)
 
     for photo in photo_list:
         lat = photo['latitude']
         lon = photo['longitude']
-        name = ['placename']
+        name = photo['placename']
 
-        location_id = trip.getAttractions(lat,lon,nam)
+        print lat, lon, name
+
+        location_id = trip.getAttractions(lat,lon,name)
+        print location_id
         reviews_and_urls = trip.getReviews(location_id)
 
         photo.update(reviews_and_urls)
@@ -23,7 +27,7 @@ def useInsta(insta_userid):
 def main():
     #TEST
     userid = "mattbg"
-    useInsta(useInsta)
+    useInsta(userid)
 
 if __name__ == "__main__":
     main()

@@ -8,8 +8,9 @@ import requests
 
 
 def getAttractions(lat, lon, name):
-    name.replace (" ", "+")
-    url = "http://api.tripadvisor.com/api/partner/2.0/map/" + str(lat) + "," + str(lon) + "," + "/attractions?key=HackTripAdvisor-ade29ff43aed&q=" + name   
+    name = name.replace(" ", "+")
+    url = "http://api.tripadvisor.com/api/partner/2.0/map/" + str(lat) + "," + str(lon) + "," + "/attractions?key=HackTripAdvisor-ade29ff43aed&q="
+    #print url
     response = requests.get(url)
     
     if response.status_code == 200:
@@ -21,12 +22,17 @@ def getAttractions(lat, lon, name):
 
 def getReviews(location_id):
     url = "http://api.tripadvisor.com/api/partner/2.0/location/" + location_id + "?key=HackTripAdvisor-ade29ff43aed"
+    #print "REVIEWS " + url
     response = requests.get(url)
     
     if response.status_code == 200:
         data = json.loads(response.text)
-        url = data["reviews"][0]["url"]
-        text = data["reviews"][0]["text"]
+        if (len(data["reviews"]) > 0):
+            text = data["reviews"][0]["text"]
+            url = data["reviews"][0]["url"]
+        else:
+            text = ""
+            url = ""
         return {"review_url":url, "review_text": text}
     return None
 
