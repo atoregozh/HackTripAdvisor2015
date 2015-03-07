@@ -63,7 +63,7 @@
       <div id="instapics"> 
        	{% for d in data %}
         <div class = "pics"> <img src="{{d['imageurl']}}"/></div>
-        <div class="review"> <p class="review-text">{{d['review_text']}}</p></div>
+        <div class="review"> <p class="review-text">{{d['review_text']}}</p> <a class="review-url" href={{d["review_url"]}}>More</a></div>
         {% endfor %} 
       </div>
     </div>
