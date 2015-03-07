@@ -35,7 +35,6 @@ def get_recent_photos(ig_userid):
 		da = json.loads(re.text)
 		pages.extend(da['data'])
 	photos = []
-	print type(pages)
 	for p in pages:
 		if (p['location'] and p['location'].get('name') and p['type']=="image"):
 			pdata = {}
