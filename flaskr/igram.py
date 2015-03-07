@@ -1,14 +1,21 @@
+#!/usr/bin/python
+# ordering imports
+# Standard Library modules
 import json
+import copy
+
+# Third-party library
 import requests
 
 ig_client_id = "c093bedbc7c64d04a3b28dd1c1fa72db"
 
 def get_ig_userid(ig_username):
-	url = "https://api.instagram.com/v1/users/search?q=" + ig_username + "&client_id=" + ig_client_id
+	user = copy.copy(ig_username)
+	url = "https://api.instagram.com/v1/users/search?q=" + user + "&client_id=" + ig_client_id
 	re = requests.get(url)
 	da = json.loads(re.text)
 	for u in da["data"]:
-		if u["username"]==ig_username:
+		if u["username"]==user:
 			return u["id"]
 	return 0
 
@@ -18,22 +25,26 @@ def get_recent_photos(ig_userid):
 	da = json.loads(re.text)
 	photos = []
 	for p in da['data']:
-		if (p['location'] and p['location'].get('name')):
+		if (p['location'] and p['location'].get('name')) and p['type']=="image":
 			pdata = {}
 			pdata['timestamp']=p['caption']['created_time']
 			pdata['latitude']=p['location']['latitude']
 			pdata['longitude']=p['location']['longitude']
 			pdata['placename']=p['location']['name']
-			pdata['thumbnail']=p['images']['thumbnail']['url']
+			pdata['thumbnail']=p['images']['thumbnail']['url'] #little image
 			pdata['imageurl']=p['images']['low_resolution']['url']
-			print pdata
+			# print pdata
 			photos.append(pdata)
-	return json.dumps(photos)
-
-uid = get_ig_userid("kirstenalana")
-print uid
-ps = get_recent_photos(uid)
-print ps
+	return photos
 
 
 
+def main():
+	#TEST cases
+	uid = get_ig_userid("mattbg")
+	print uid
+	ps = get_recent_photos(uid)
+	print ps
+
+if __name__ == "__main__":
+    main()
