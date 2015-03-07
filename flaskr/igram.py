@@ -19,23 +19,28 @@ def get_ig_userid(ig_username):
 			return u["id"]
 	return 0
 
-def get_recent_photos(ig_userid):
+def get_recent_photos(ig_userid, max_id):
 
-	pages = []
-	count = 0
+	# pages = []
+	# count = 0
 
 	url = "https://api.instagram.com/v1/users/" + ig_userid + "/media/recent/?client_id=" + ig_client_id
+	if (max_id):
+		url = url + "&max_id=" + max_id
 	re = requests.get(url)
 	da = json.loads(re.text)
-	pages.extend(da['data'])
-	while (da['pagination'].get('next_url') and count < 5):
-		count+=1
-		url = da['pagination']['next_url']
-		re = requests.get(url)
-		da = json.loads(re.text)
-		pages.extend(da['data'])
+	# pages.extend(da['data'])
+	# while (da['pagination'].get('next_url') and count < 5):
+	# 	count+=1
+	# 	url = da['pagination']['next_url']
+	# 	re = requests.get(url)
+	# 	da = json.loads(re.text)
+	# 	pages.extend(da['data'])
 	photos = []
-	for p in pages:
+	page = da['data']
+	if (da['pagination'].get('next_url')):
+		max_id = da['pagination']['next_max_id']
+	for p in page:
 		if (p['location'] and p['location'].get('name') and p['type']=="image"):
 			pdata = {}
 			#pdata['timestamp']=p['caption']['created_time']
@@ -46,7 +51,7 @@ def get_recent_photos(ig_userid):
 			pdata['imageurl']=p['images']['low_resolution']['url']
 			# print pdata
 			photos.append(pdata)
-	return photos
+	return {"photos":photos, "max_id":max_id} 
 
 def main():
 	#TEST cases

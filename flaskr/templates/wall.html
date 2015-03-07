@@ -22,23 +22,12 @@
 	margin: 50px auto;
 }
 
-/*#columns {
-	-webkit-column-count: 3;
-	-webkit-column-gap: 10px;
-	-webkit-column-fill: auto;
-	-moz-column-count: 3;
-	-moz-column-gap: 10px;
-	-moz-column-fill: auto;
-	column-gap: 15px;
-	column-fill: auto;
-}*/
-
 .pin {
 	display: inline-block;
+	float: left;
 	background: #FEFEFE;
 	border: 2px solid #FAFAFA;
 	box-shadow: 0 1px 2px rgba(34, 25, 25, 0.4);
-	margin: 0 2px 15px;
 /*	-webkit-column-break-inside: avoid;
 	-moz-column-break-inside: avoid;*/
 	column-break-inside: avoid;
@@ -50,39 +39,45 @@
 	-moz-transition: all .2s ease;
 	-o-transition: all .2s ease;
 	transition: all .2s ease;
-	height: 100%;
-	width: 300px
+	height: 400px;
+	width: 300px;
+	margin-left: 20px;
+	margin-top: 10px;
+	overflow: scroll;
 }
 
-.pin img {
+#pic {
 	width: 100%;
 	border-bottom: 1px solid #ccc;
 	padding-bottom: 15px;
 	margin-bottom: 5px;
 }
 
-.pin p {
+.pin div {
 	font: 12px/18px Arial, sans-serif;
 	color: #333;
 	margin: 0;
 }
 
-/*@media (min-width: 960px) {
-	#columns {
-		-webkit-column-count: 4;
-		-moz-column-count: 4;
-		column-count: 4;
-	}
-}*/
+.pin div img#trip {
+	height: 20px;
+	width: 20px;
+	bottom-padding: 0px;
+	top-padding: 0px;
+}
 
-/*
-@media (min-width: 1100px) {
-	#columns {
-		-webkit-column-count: 5;
-		-moz-column-count: 5;
-		column-count: 5;
-	}
-}*/
+body {
+	background-color: #9ec27e;
+}
+
+.logo {
+	font-family: arial, sans-serif;
+	margin-top: 20px;
+	font-size: 25px;
+	color: #FFFFCC;
+	width:500px;
+	height: 100px;
+}
 
 </style>
 </head>
@@ -99,7 +94,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Follow My Trips</a>
+      <a class="logo" href="#">Follow My Trips</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -129,22 +124,17 @@
 	</script>
 
   <section id="wallpics" style="height: 2000px">
-		<script>
-			var lastd = null
-		</script>
     <div id="wall-container">
-      <div id="instapics"> 
+      <div id="instapics" style="min-width=2000px"> 
 			<div id="wrapper">
 			<div id="columns">
        	{% for d in data %}
 					<div class="pin">
-						<img src= "{{d['imageurl']}}"/>
-						<p>
+						<img id="pic" src= "{{d['imageurl']}}"/>
+						<div>
+							<img id="trip" src={{ url_for("static", filename = "tripadvisor-logo.gif") }}></img>
 							{{d['review_text']}}
-						</p>
-						<script>
-							lastd = {{ d["placement"] }}
-						</script>
+						</div>
 					</div>
         {% endfor %} 
 			</div>
@@ -152,6 +142,7 @@
       </div>
     </div>
   </section>
+
 
 </body>
 </html>
