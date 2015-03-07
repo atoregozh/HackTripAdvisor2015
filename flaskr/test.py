@@ -1,11 +1,9 @@
 from flask import Flask, render_template, json, url_for, request
 import json
-from pygeocoder import Geocoder
 import useInstaTrip
 from urllib2 import urlopen
 import time
 import requests
-from geopy.geocoders import Nominatim
 app = Flask(__name__)
 
 def get_elements(img):
@@ -21,12 +19,12 @@ def getCity(coordinate):
         return city
     return None
 
-def city(coordinate):
-	place = Geocoder.reverse_geocode(coordinate[0], coordinate[1])
-	if not place:
-		return None
-	else:
-		return place[0].city
+#def city(coordinate):
+#	place = Geocoder.reverse_geocode(coordinate[0], coordinate[1])
+#	if not place:
+#		return None
+#	else:
+#		return place[0].city
 
 @app.route('/')
 def login():
@@ -53,6 +51,20 @@ def world_map():
 				images_by_city[c_name].append(get_elements(img))
 		print images_by_city
 		return render_template("world_map.html", locations=locations, all_images=images_by_city)
+
+@app.route('/walls', methods=[GET])
+def wall():
+	username = request.args.get("igid")
+	lat = request.args.get("lat")
+	lon = request.args.get("lon")
+ 	data = useInstaTrip.useInsta(username)
+	for d in data:
+		if lat >= d["latitude"]-0.2 && lat <= d["latitude"]+0.2 &&
+			 lon >= d["longitude"]-0.2 && lon >= d["longitude"]+0.2:
+
+ 	data = data[0:5]
+ 	print data
+ 	return render_template("wall.html", data=data)
 
 if __name__ == '__main__':
 		app.debug = True
