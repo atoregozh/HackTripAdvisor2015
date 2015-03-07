@@ -4,6 +4,8 @@ from pygeocoder import Geocoder
 
 app = Flask(__name__)
 
+def get_elements(img):
+		return [img["latitude"], img["longitude"], img["timestamp"].encode("utf-8"), img["thumbnail"].encode("utf-8")]
 
 def city(coordinate):
 	place = Geocoder.reverse_geocode(coordinate[0], coordinate[1])
@@ -17,25 +19,18 @@ def world_map():
 		raw_data = open("igram.json", "r")
 		data = json.load(raw_data)
 		locations = {}
+		images_by_city = {}
 		for img in data:
-			coordinate = [img["location"]["latitude"], img["location"]["longitude"]]
+			coordinate = [img["latitude"], img["longitude"]]
 			c = city(coordinate)
 			if c:
-				locations[c.encode("utf-8").replace(" ", "-")] = coordinate
-		print locations
-		return render_template("world_map.html", locations=locations)
-
-@app.route('/<city_name>')
-def city_map(city_name):
-		raw_data = open("igram.json", "r")
-		data = json.load(raw_data)
-		images = []
-		for img in data:
-			coordinate = [img["location"]["latitude"], img["location"]["longitude"]]
-			c = city(coordinate)
-			if c and city_name == c.encode("utf-8").replace(" ", "-"):
-				images.append(img)
-		return render_template("city_map.html", images=images)
+				c_name = c.encode("utf-8")
+				locations[c_name] = coordinate
+				if c_name not in images_by_city:
+					images_by_city[c_name] = []
+				images_by_city[c_name].append(get_elements(img))
+		print images_by_city
+		return render_template("world_map.html", locations=locations, all_images=images_by_city)
 
 if __name__ == '__main__':
     app.run()
