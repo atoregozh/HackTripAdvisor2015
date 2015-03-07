@@ -27,34 +27,37 @@ def login():
 
 @app.route('/world_map', methods=['GET'])
 def world_map():
-		username = request.args.get("igid")
-		data = useInstaTrip.useInsta(username)
-		locations = {}
-		images_by_city = {}
-		center = [0.0, 0.0]
-		count = 0
-		for img in data:
-			if "latitude" not in img or "longitude" not in img:
-				continue
-			coordinate = [img["latitude"], img["longitude"]]
-			c = getState(coordinate)
-			if c:
-				c_name = c.encode("utf-8")
-				locations[c_name] = coordinate
-				if c_name not in images_by_city:
-					images_by_city[c_name] = []
-				images_by_city[c_name].append(get_elements(img))
-				center[0] += coordinate[0]
-				center[1] += coordinate[1]
-				count += 1
-		print images_by_city
-		if count > 0:
-			center[0] /= count
-			center[1] /= count
-			print center
-		else:
-			center = None
-		return render_template("world_map.html", name=json.dumps(username), locations=locations, all_images=images_by_city, center=center)
+	username = request.args.get("igid")
+	max_id = None
+	page = useInstaTrip.useInsta(username, max_id)
+	photos = page['photos']
+	next_max_id = page['max_id']
+	locations = {}
+	images_by_city = {}
+	center = [0.0, 0.0]
+	count = 0
+	for img in photos:
+		if "latitude" not in img or "longitude" not in img:
+			continue
+		coordinate = [img["latitude"], img["longitude"]]
+		c = getState(coordinate)
+		if c:
+			c_name = c.encode("utf-8")
+			locations[c_name] = coordinate
+			if c_name not in images_by_city:
+				images_by_city[c_name] = []
+			images_by_city[c_name].append(get_elements(img))
+			center[0] += coordinate[0]
+			center[1] += coordinate[1]
+			count += 1
+	print images_by_city
+	if count > 0:
+		center[0] /= count
+		center[1] /= count
+		print center
+	else:
+		center = None
+	return render_template("world_map.html", name=json.dumps(username), locations=locations, all_images=images_by_city, center=center)
 
 @app.route('/walls', methods=["GET"])
 def wall():

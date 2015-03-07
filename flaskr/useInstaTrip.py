@@ -6,12 +6,12 @@ import trip
 import igram as insta
 import copy
 
-def useInsta(insta_userid):
+def useInsta(insta_userid, max_id):
 	userid = copy.copy(insta_userid)
 	uid = insta.get_ig_userid(userid)
-	photo_list = insta.get_recent_photos(uid)
-
-	for photo in photo_list:
+	photo_page = insta.get_recent_photos(uid, max_id)
+	
+	for photo in photo_page['photos']:
 		lat = photo['latitude']
 		lon = photo['longitude']
 		name = photo['placename']
@@ -20,12 +20,12 @@ def useInsta(insta_userid):
 		reviews_and_urls = trip.getReviews(location_id)
 		
 		photo.update(reviews_and_urls)
-	return photo_list
+	return photo_page
 
 def main():
     #TEST
     userid = "mattbg"
-    useInsta(userid)
+    print useInsta(userid, None)
 
 if __name__ == "__main__":
     main()
