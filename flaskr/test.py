@@ -6,6 +6,8 @@ import time
 import requests
 app = Flask(__name__)
 
+N = 20
+
 def get_elements(img):
 		return [img["latitude"], img["longitude"], img["thumbnail"].encode("utf-8")]
 
@@ -28,7 +30,7 @@ def login():
 @app.route('/world_map', methods=['GET'])
 def world_map():
 		username = request.args.get("igid")
-		data = useInstaTrip.useInsta(username)
+		data = useInstaTrip.useInsta(username)[1:N]
 		locations = {}
 		images_by_city = {}
 		center = [0.0, 0.0]
@@ -66,7 +68,9 @@ def wall():
 	print lon
 	
  	data = useInstaTrip.useInsta(username)
+	data = data[1 : N]
 	target_data = {}
+	print len(data)
 	for d in data:
 		if "latitude" not in d or "longitude" not in d:
 			continue
@@ -74,9 +78,9 @@ def wall():
 #		print "h2", d["longitude"]
 #		print "hello", abs(float(lon)-float(d["longitude"]))
 #		print "hi", abs(float(lat)-float(d["latitude"]))
-		if abs(float(lon)-float(d["longitude"])) < 1 and abs(float(lat)-float(d["latitude"])) < 1:
-			key = "%d-%d" % (d["latitude"], d["longitude"])
-			target_data[key] = d
+#		if abs(float(lon)-float(d["longitude"])) < 1 and abs(float(lat)-float(d["latitude"])) < 1:
+#			key = "%d-%d" % (d["latitude"], d["longitude"])
+#			target_data[key] = d
  	print target_data.keys()
  	return render_template("wall.html", name=json.dumps(username), data=target_data.values())
 

@@ -129,6 +129,9 @@
 	</script>
 
   <section id="wallpics" style="height: 2000px">
+		<script>
+			var lastd = null
+		</script>
     <div id="wall-container">
       <div id="instapics"> 
 			<div id="wrapper">
@@ -139,15 +142,15 @@
 						<p>
 							{{d['review_text']}}
 						</p>
+						<script>
+							lastd = {{ d["placement"] }}
+						</script>
 					</div>
         {% endfor %} 
 			</div>
 			</div>
       </div>
     </div>
-    <div id="follow-button"> <form METHOD="LINK" ACTION={{d["placename"]}}>
-      <INPUT TYPE="submit" VALUE="Follow My Journey!">
-      </FORM><button type="button"></button> </div>
   </section>
 
 </body>
