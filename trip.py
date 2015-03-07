@@ -1,9 +1,11 @@
+#!/usr/bin/python
 # ordering imports
 # Standard Library modules
 import json
 
 # Third-party library
 import requests
+
 
 def getAttractions(lat, lon, name):
     name.replace (" ", "+")
@@ -28,11 +30,16 @@ def getReviews(location_id):
         return {"review_url":url, "review_text": text}
     return None
 
-#TEST
-lat = 40.768924369
-lon = -73.975306691
-nam = "Central Park"
 
-id = getAttractions(lat,lon,nam)
-dict = getReviews(id)
-print dict
+def main():
+    #TEST Trip
+    lat = 40.768924369
+    lon = -73.975306691
+    nam = "Central Park"
+
+    ids = getAttractions(lat,lon,nam)
+    dictn = getReviews(ids)
+    print dictn
+
+if __name__ == "__main__":
+    main()
