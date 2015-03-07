@@ -15,7 +15,7 @@ def getState(coordinate):
     
     if response.status_code == 200:
         data = json.loads(response.text)
-        state = data["data"]["address_obj"]["state"]
+        state = data["data"][0]["address_obj"]["state"]
         return state
     return None
 
@@ -37,7 +37,7 @@ def world_map():
 			if "latitude" not in img or "longitude" not in img:
 				continue
 			coordinate = [img["latitude"], img["longitude"]]
-			c = getCity(coordinate)
+			c = getState(coordinate)
 			if c:
 				c_name = c.encode("utf-8")
 				locations[c_name] = coordinate
