@@ -42,5 +42,5 @@ def world_map():
 # 	return render_template("wall.html")
 
 if __name__ == '__main__':
-    app.run()
-    app.debug = True
+    app.run(debug=True)
+    #app.debug = True

@@ -1,32 +1,24 @@
-from flask import Flask, render_template, json, url_for, request
+from flask import Flask, render_template, url_for, request
 import json
-from pygeocoder import Geocoder
 import useInstaTrip
 from urllib2 import urlopen
 import time
 import requests
-from geopy.geocoders import Nominatim
 app = Flask(__name__)
 
 def get_elements(img):
-		return [img["latitude"], img["longitude"], img["timestamp"].encode("utf-8"), img["thumbnail"].encode("utf-8")]
+		return [img["latitude"], img["longitude"], img["thumbnail"].encode("utf-8")]
 
-def getCity(coordinate):
+def getState(coordinate):
     url = "http://api.tripadvisor.com/api/partner/2.0/map/" + str(coordinate[0]) + "," + str(coordinate[1]) + "," + "/geos?key=HackTripAdvisor-ade29ff43aed"
     response = requests.get(url)
     
     if response.status_code == 200:
         data = json.loads(response.text)
-        city = data["data"][0]["name"]
-        return city
+        state = data["data"]["address_obj"]["state"]
+        return state
     return None
 
-def city(coordinate):
-	place = Geocoder.reverse_geocode(coordinate[0], coordinate[1])
-	if not place:
-		return None
-	else:
-		return place[0].city
 
 @app.route('/')
 def login():
@@ -39,11 +31,12 @@ def world_map():
 		data = useInstaTrip.useInsta(username)
 		locations = {}
 		images_by_city = {}
+		center = [0.0, 0.0]
+		count = 0
 		for img in data:
 			if "latitude" not in img or "longitude" not in img:
 				continue
 			coordinate = [img["latitude"], img["longitude"]]
-			#c = "boston" #city(coordinate)
 			c = getCity(coordinate)
 			if c:
 				c_name = c.encode("utf-8")
@@ -51,8 +44,41 @@ def world_map():
 				if c_name not in images_by_city:
 					images_by_city[c_name] = []
 				images_by_city[c_name].append(get_elements(img))
+				center[0] += coordinate[0]
+				center[1] += coordinate[1]
+				count += 1
 		print images_by_city
-		return render_template("world_map.html", locations=locations, all_images=images_by_city)
+		if count > 0:
+			center[0] /= count
+			center[1] /= count
+			print center
+		else:
+			center = None
+		return render_template("world_map.html", name=json.dumps(username), locations=locations, all_images=images_by_city, center=center)
+
+@app.route('/walls', methods=["GET"])
+def wall():
+	username = request.args.get("name")
+	lat = request.args.get("lat")
+	lon = request.args.get("lon")
+	print username
+	print lat
+	print lon
+	
+ 	data = useInstaTrip.useInsta(username)
+	target_data = {}
+	for d in data:
+		if "latitude" not in d or "longitude" not in d:
+			continue
+		print "h1", d["latitude"]
+		print "h2", d["longitude"]
+		print "hello", abs(float(lon)-float(d["longitude"]))
+		print "hi", abs(float(lat)-float(d["latitude"]))
+		if abs(float(lon)-float(d["longitude"])) < 1 and abs(float(lat)-float(d["latitude"])) < 1:
+			key = "%d-%d" % (d["latitude"], d["longitude"])
+			target_data[key] = d
+ 	print target_data.keys()
+ 	return render_template("wall.html", name=json.dumps(username), data=target_data.values())
 
 if __name__ == '__main__':
 		app.debug = True
