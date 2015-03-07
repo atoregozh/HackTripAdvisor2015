@@ -33,8 +33,9 @@
 		
 		.logo {
 			font-family: arial, sans-serif;
-			font-size: 30px;
-			font-weight: bold;
+			margin-top: 15px;
+			font-size: 25px;
+			/*font-weight: bold;*/
 			color: #FFFFCC;
 			width:500px;
 			height: 100px;
@@ -151,12 +152,14 @@
 					r = radius(c, center)
 					console.log(r)
 					console.log(map.getZoom())
-					if (r >= 50.0) {
+					var measure = r/map.getZoom()
+					console.log(measure)
+					if (measure >= 150) {
 						return
 					}
 					new_url = "/walls?name="+name+"&lat="+c[0]+"&lon="+c[1]
 					console.log(new_url)
-					//window.location.replace(new_url);
+					window.location.replace(new_url);
 			});
 		}
 

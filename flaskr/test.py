@@ -70,10 +70,10 @@ def wall():
 	for d in data:
 		if "latitude" not in d or "longitude" not in d:
 			continue
-		print "h1", d["latitude"]
-		print "h2", d["longitude"]
-		print "hello", abs(float(lon)-float(d["longitude"]))
-		print "hi", abs(float(lat)-float(d["latitude"]))
+#		print "h1", d["latitude"]
+#		print "h2", d["longitude"]
+#		print "hello", abs(float(lon)-float(d["longitude"]))
+#		print "hi", abs(float(lat)-float(d["latitude"]))
 		if abs(float(lon)-float(d["longitude"])) < 1 and abs(float(lat)-float(d["latitude"])) < 1:
 			key = "%d-%d" % (d["latitude"], d["longitude"])
 			target_data[key] = d
