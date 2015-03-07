@@ -30,7 +30,7 @@ def get_recent_photos(ig_userid):
 			photos.append(pdata)
 	return json.dumps(photos)
 
-uid = get_ig_userid("mattbg")
+uid = get_ig_userid("kirstenalana")
 print uid
 ps = get_recent_photos(uid)
 print ps
